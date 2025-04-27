@@ -30,7 +30,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(['success' => false,'errors' => $validator->errors()], 422);
         }
 
         $user = $this->authService->register($validator->validated());
@@ -38,6 +38,7 @@ class AuthController extends Controller
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
+            'success' => true,
             'message' => 'User registered successfully',
             'token' => $token,
             'user' => $user
@@ -52,28 +53,29 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(['success' => false,'errors' => $validator->errors()], 422);
         }
 
         if (!$this->authService->login($request->email, $request->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json(['success' => false,'message' => 'Invalid credentials'], 401);
         }
 
         $user = auth()->user();
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
+            'success' => true,
             'message' => 'Login successful',
             'token' => $token,
             'user' => $user
-        ]);
+        ],200);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out successfully']);
+        return response()->json(['success' => true,'message' => 'Logged out successfully']);
     }
 
     public function profile(Request $request)
@@ -83,10 +85,11 @@ class AuthController extends Controller
 
         if (!$user) {
             return response()->json([
+                'success' => false,
                 'message' => 'Invalid or missing API token',
             ], 401);
         }
     
-        return response()->json($user);
+        return response()->json(['success' => true,'data'=>$user]);
     }
 }

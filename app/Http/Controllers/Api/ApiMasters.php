@@ -32,9 +32,9 @@ class ApiMasters extends Controller
     {
         try {
             $categories = $this->categoryService->getAll();
-            return response()->json(['categories' => $categories]);
+            return response()->json(['success' => true,'categories' => $categories], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Unable to fetch categories'], 500);
+            return response()->json(['success' => false,'error' => 'Unable to fetch categories'], 500);
         }
     }
 
@@ -51,9 +51,9 @@ class ApiMasters extends Controller
 
         try {
             $this->categoryService->createCategory($request->all());
-            return response()->json(['message' => 'Category created successfully']);
+            return response()->json(['success' => true,'message' => 'Category created successfully'],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error creating category'], 500);
+            return response()->json(['success' => false,'error' => 'Error creating category'], 500);
         }
     }
 
@@ -71,9 +71,9 @@ class ApiMasters extends Controller
 
         try {
             $this->categoryService->update($id, $request->all());
-            return response()->json(['message' => 'Category updated successfully']);
+            return response()->json(['success' => true,'message' => 'Category updated successfully'],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error updating category'], 500);
+            return response()->json(['success' => false,'error' => 'Error updating category'], 500);
         }
     }
 
@@ -85,10 +85,12 @@ class ApiMasters extends Controller
             $category->delete();
     
             return response()->json([
+                'success' => true,
                 'message' => 'Category deleted successfully.'
-            ]);
+            ],200);
         } catch (\Exception $e) {
             return response()->json([
+                'success' => false,
                 'error' => 'Something went wrong.',
                 'details' => $e->getMessage()
             ], 500);
@@ -107,7 +109,7 @@ class ApiMasters extends Controller
             $perPage = request()->input('per_page', 10);
 
             $users = User::where('usertype', 2)->paginate($perPage);
-            return response()->json($users);
+            return response()->json(['success' => true,'data'=>$users]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch users'], 500);
         }
@@ -120,9 +122,9 @@ class ApiMasters extends Controller
             $user = User::findOrFail($id);
             $user->delete();
 
-            return response()->json(['message' => 'User deleted successfully']);
+            return response()->json(['success' => true,'message' => 'User deleted successfully'],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete user'], 500);
+            return response()->json(['success' => false,'error' => 'Failed to delete user'], 500);
         }
     }
 
@@ -134,7 +136,7 @@ class ApiMasters extends Controller
 
             $user = User::find($id); // Assuming the logged-in user is trying to update their details
             if (!$user) {
-                return response()->json(['error' => 'User not found'], 404); // Return a 404 if not found
+                return response()->json(['success' => false,'error' => 'User not found'], 404); // Return a 404 if not found
             }
 
             // $user = $request->user();
@@ -153,9 +155,9 @@ class ApiMasters extends Controller
     
             $user->update($request->all());
     
-            return response()->json(['message' => 'User updated successfully']);
+            return response()->json(['success' => true,'message' => 'User updated successfully'],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update user'], 500);
+            return response()->json(['success' => false,'error' => 'Failed to update user'], 500);
         }
     }
 
@@ -192,9 +194,9 @@ class ApiMasters extends Controller
 
             $this->productService->createProduct($request->all());
 
-            return response()->json(['message' => 'Product created successfully']);
+            return response()->json(['success' => true,'message' => 'Product created successfully'],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to add product', 'details' => $e->getMessage()], 500);
+            return response()->json(['success' => false,'error' => 'Failed to add product', 'details' => $e->getMessage()], 500);
         }
     }
 
@@ -231,12 +233,12 @@ class ApiMasters extends Controller
         try {
             $product = Product::with('categories', 'images')->find($id);
             if (!$product) {
-                return response()->json(['error' => 'Product not found'], 404);
+                return response()->json(['success' => false,'error' => 'Product not found'], 404);
             }
 
-            return response()->json(['product' => $product]);
+            return response()->json(['success' => true,'product' => $product],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch product detail'], 500);
+            return response()->json(['success' => false,'error' => 'Failed to fetch product detail'], 500);
         }
     }
 
@@ -282,9 +284,9 @@ class ApiMasters extends Controller
                 }
             }
 
-            return response()->json(['message' => 'Product updated successfully']);
+            return response()->json(['success' => true,'message' => 'Product updated successfully'],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update product', 'details' => $e->getMessage()], 500);
+            return response()->json(['success' => false,'error' => 'Failed to update product', 'details' => $e->getMessage()], 500);
         }
     }
 
@@ -293,7 +295,7 @@ class ApiMasters extends Controller
         try {
             $product = Product::find($id);
             if (!$product) {
-                return response()->json(['error' => 'Product not found'], 404);
+                return response()->json(['success' => false,'error' => 'Product not found'], 404);
             }
 
 
@@ -305,9 +307,9 @@ class ApiMasters extends Controller
             $product->categories()->detach();
             $product->delete();
 
-            return response()->json(['message' => 'Product deleted successfully']);
+            return response()->json(['success' => true,'message' => 'Product deleted successfully'],200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete product'], 500);
+            return response()->json(['success' => false,'error' => 'Failed to delete product'], 500);
         }
     }
 
@@ -331,7 +333,7 @@ class ApiMasters extends Controller
             $product = Product::find($productId);
            
             if (!$product) {
-                return response()->json(['success' => false, 'message' => 'Product not found.']);
+                return response()->json(['success' => false,'success' => false, 'message' => 'Product not found.'],404);
             }
 
             // Check if there is enough stock
@@ -381,7 +383,7 @@ class ApiMasters extends Controller
                                  ->get();
              }
  
-             return response()->json(['orders' => $orders]);
+             return response()->json(['success' => true,'orders' => $orders],200);
          } catch (\Exception $e) {
              return response()->json(['error' => 'Failed to retrieve orders: ' . $e->getMessage()], 500);
          }
@@ -401,7 +403,7 @@ class ApiMasters extends Controller
                  return response()->json(['error' => 'Unauthorized'], 403);
              }
          } catch (\Exception $e) {
-             return response()->json(['error' => 'Order not found: ' . $e->getMessage()], 404);
+             return response()->json(['success' => false,'error' => 'Order not found: ' . $e->getMessage()], 404);
          }
      }
  
@@ -425,9 +427,9 @@ class ApiMasters extends Controller
              $order->status = $validated['status'];
              $order->save();
  
-             return response()->json(['message' => 'Order status updated successfully!', 'order' => $order]);
+             return response()->json(['success' => true,'message' => 'Order status updated successfully!', 'order' => $order],200);
          } catch (\Exception $e) {
-             return response()->json(['error' => 'Failed to update order status: ' . $e->getMessage()], 500);
+             return response()->json(['success' => false,'error' => 'Failed to update order status: ' . $e->getMessage()], 500);
          }
      }
 
