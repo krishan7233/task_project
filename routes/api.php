@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ApiMasters;
 
 
+Route::middleware('throttle:60,1')->group(function () {
+
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -49,17 +52,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/users', [ApiMasters::class, 'userslist']);
         Route::delete('/users/{id}', [ApiMasters::class, 'delete_users']);
-    
-
-        
-
 
     });
 
 
 });
 
-
+});
 
 
    
