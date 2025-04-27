@@ -7,7 +7,7 @@
 # in admin panel after login via admin, admin can manage all the functionality of the task ,like category,product,orders ,users etc
  And customer can only login via account and see the product and place for order and inital status of order is pending and after admin aceept then it will complete
 #and user can see own orders via order panel.
-
+# when you will place an order via product and users ids we will place the orders and one qty from product stock will be automatically decrese . I done  this logic  via this process because you are not mention cart process for qty .it will manage stock of product.
 ## APIs Part
 # i used sanctum authentication for validating apis 
 # admin can manage all apis and customers can call some apis like registration ,place order,order details, login ,profile etc 
