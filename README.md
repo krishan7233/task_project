@@ -9,7 +9,7 @@
 #and user can see own orders via order panel.
 # when you will place an order via product and users ids we will place the orders and one qty from product stock will be automatically decrese . I done  this logic  via this process because you are not mention cart process for qty .it will manage stock of product.
 ## APIs Part
-# i used sanctum authentication for validating apis 
+# i used sanctum authentication for validating apis and I have setup the token in Authorization parameter.you can pass through header or i have setup in common collection Authorization.
 # admin can manage all apis and customers can call some apis like registration ,place order,order details, login ,profile etc 
 
 ## I have shared the APIs collection and database file in the \api_collection folder .please check .let me know, if there are any issues in code
